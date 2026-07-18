@@ -1,0 +1,76 @@
+/**
+ * Payload passed to the consumer's store on every tracked request.
+ * No ORM coupling — map these fields to your own table/columns.
+ */
+export interface TrackEventPayload {
+  eventName: string;
+  /**
+   * Default detector returns a {@link TrackPlatform}-style label
+   * (flutter, react-native, android, ios, windows, macos, linux, browsers, …).
+   * Override via `detectCategory`.
+   */
+  category: string;
+  /** Whatever your getUserId returns (string id, null, etc.). */
+  userId?: string | null;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Pluggable persistence. Implement with Prisma, TypeORM, raw SQL, etc.
+ */
+export interface TrackStore {
+  create(event: TrackEventPayload): Promise<unknown>;
+}
+
+export type TrackGetUserId = (req: {
+  user?: { userId?: string; sub?: string; [key: string]: unknown };
+  headers?: Record<string, string | string[] | undefined>;
+  [key: string]: unknown;
+}) => string | null | undefined;
+
+export type TrackDetectCategory = (userAgent: string) => string;
+
+export interface TrackModuleOptions {
+  /** Required — how events are persisted. */
+  store: TrackStore;
+
+  /**
+   * Optional allow-list of event names.
+   * If set and an unknown name is used, behavior depends on `strictEventNames`.
+   */
+  eventNames?: readonly string[];
+
+  /**
+   * When `eventNames` is set:
+   * - `true`  → skip recording unknown names (and log a warning)
+   * - `false` → record anyway (default)
+   */
+  strictEventNames?: boolean;
+
+  /**
+   * Extract a user identifier from the request.
+   * Default: `req.user?.userId ?? req.user?.sub ?? null`
+   */
+  getUserId?: TrackGetUserId;
+
+  /**
+   * Map User-Agent → category string.
+   * Default: {@link detectPlatform} — flutter, react-native, electron,
+   * android, ios, windows, macos, linux, chrome, firefox, safari, edge,
+   * opera, web, or unknown.
+   */
+  detectCategory?: TrackDetectCategory;
+
+  /** Register the module globally (default `true`). */
+  isGlobal?: boolean;
+}
+
+export interface TrackModuleAsyncOptions {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  imports?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  inject?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useFactory: (...args: any[]) => TrackModuleOptions | Promise<TrackModuleOptions>;
+  isGlobal?: boolean;
+}
