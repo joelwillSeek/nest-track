@@ -24,6 +24,7 @@ lerna-debug.log*
 .env
 .env.*
 !.env.example
+.npmrc
 
 # OS
 .DS_Store
