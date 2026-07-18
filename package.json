@@ -12,7 +12,6 @@
   ],
   "scripts": {
     "build": "nest build",
-    "release": "pnpm run build && pnpm publish --access public",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "jest",
