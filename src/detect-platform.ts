@@ -56,7 +56,11 @@ export function detectPlatform(userAgent: string): string {
   if (ua.includes('windows') || ua.includes('win64') || ua.includes('win32')) {
     return 'windows';
   }
-  if (ua.includes('mac os') || ua.includes('macintosh') || ua.includes('macos')) {
+  if (
+    ua.includes('mac os') ||
+    ua.includes('macintosh') ||
+    ua.includes('macos')
+  ) {
     return 'macos';
   }
   if (ua.includes('linux') || ua.includes('x11')) return 'linux';
@@ -68,7 +72,11 @@ export function detectPlatform(userAgent: string): string {
   }
   if (ua.includes('opr/') || ua.includes('opera')) return 'opera';
   if (ua.includes('firefox') || ua.includes('fxios')) return 'firefox';
-  if (ua.includes('chrome') || ua.includes('crios') || ua.includes('chromium')) {
+  if (
+    ua.includes('chrome') ||
+    ua.includes('crios') ||
+    ua.includes('chromium')
+  ) {
     return 'chrome';
   }
   if (ua.includes('safari') && !ua.includes('chrome')) return 'safari';

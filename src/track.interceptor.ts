@@ -43,17 +43,23 @@ export class TrackInterceptor implements NestInterceptor {
 
     if (!meta) return next.handle();
 
-    const req = context.switchToHttp().getRequest();
+    const req: Parameters<TrackGetUserId>[0] = context
+      .switchToHttp()
+      .getRequest();
+
+    const res: Parameters<TrackGetUserId>[1] = context
+      .switchToHttp()
+      .getResponse();
     const ua =
       typeof req.headers?.['user-agent'] === 'string'
         ? req.headers['user-agent']
         : '';
     const category = this.detectCategory(ua);
-    const userId = this.getUserId(req);
 
     return next.handle().pipe(
       tap({
         next: () => {
+          const userId = this.getUserId(req, res);
           void this.trackService
             .createTrackEvent({
               eventName: meta.eventName,

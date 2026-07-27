@@ -22,11 +22,14 @@ export interface TrackStore {
   create(event: TrackEventPayload): Promise<unknown>;
 }
 
-export type TrackGetUserId = (req: {
-  user?: { userId?: string; sub?: string; [key: string]: unknown };
-  headers?: Record<string, string | string[] | undefined>;
-  [key: string]: unknown;
-}) => string | null | undefined;
+export type TrackGetUserId = (
+  req: {
+    user?: { userId?: string; sub?: string; [key: string]: unknown };
+    headers?: Record<string, string | string[] | undefined>;
+    [key: string]: unknown;
+  },
+  res?: Record<string, unknown>,
+) => string | null | undefined;
 
 export type TrackDetectCategory = (userAgent: string) => string;
 
@@ -49,6 +52,10 @@ export interface TrackModuleOptions {
 
   /**
    * Extract a user identifier from the request.
+   * Called **after** the route handler completes, so `req.user` will be
+   * populated by any auth guard that ran. The response object is also
+   * provided so you can extract userId from the handler's response body
+   * (useful for login/signup endpoints).
    * Default: `req.user?.userId ?? req.user?.sub ?? null`
    */
   getUserId?: TrackGetUserId;
@@ -66,11 +73,12 @@ export interface TrackModuleOptions {
 }
 
 export interface TrackModuleAsyncOptions {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   imports?: any[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   inject?: any[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useFactory: (...args: any[]) => TrackModuleOptions | Promise<TrackModuleOptions>;
+
+  useFactory: (
+    ...args: any[]
+  ) => TrackModuleOptions | Promise<TrackModuleOptions>;
   isGlobal?: boolean;
 }

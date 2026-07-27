@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { TRACK_MODULE_OPTIONS } from './track.constants';
 import {
   TrackEventPayload,
- type TrackModuleOptions,
+  type TrackModuleOptions,
   TrackStore,
 } from './track.types';
 
@@ -13,9 +13,7 @@ export class TrackService {
   private readonly eventNames?: ReadonlySet<string>;
   private readonly strictEventNames: boolean;
 
-  constructor(
-    @Inject(TRACK_MODULE_OPTIONS) options: TrackModuleOptions,
-  ) {
+  constructor(@Inject(TRACK_MODULE_OPTIONS) options: TrackModuleOptions) {
     this.store = options.store;
     this.eventNames = options.eventNames
       ? new Set(options.eventNames)

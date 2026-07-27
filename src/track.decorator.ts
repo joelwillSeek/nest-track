@@ -19,4 +19,7 @@ export const Track = (
   eventName: string,
   metadata?: Record<string, unknown>,
 ): MethodDecorator =>
-  SetMetadata(TRACK_EVENT_KEY, { eventName, metadata } satisfies TrackEventMeta);
+  SetMetadata(TRACK_EVENT_KEY, {
+    eventName,
+    metadata,
+  } satisfies TrackEventMeta);
