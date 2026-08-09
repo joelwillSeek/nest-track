@@ -4,6 +4,7 @@ export { TrackService } from './track.service';
 export { Track } from './track.decorator';
 export type { TrackEventMeta } from './track.decorator';
 export { TRACK_MODULE_OPTIONS, TRACK_EVENT_KEY } from './track.constants';
+export { TrackController } from './track.controller';
 export { detectPlatform, TRACK_PLATFORMS } from './detect-platform';
 export type { TrackPlatform } from './detect-platform';
 export type {

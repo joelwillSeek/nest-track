@@ -2,6 +2,7 @@ import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { TRACK_MODULE_OPTIONS } from './track.constants';
 import { TrackInterceptor } from './track.interceptor';
 import { TrackService } from './track.service';
+import { TrackController } from './track.controller';
 import { TrackModuleAsyncOptions, TrackModuleOptions } from './track.types';
 
 @Module({})
@@ -15,6 +16,7 @@ export class TrackModule {
         TrackService,
         TrackInterceptor,
       ],
+      controllers: [TrackController],
       exports: [TrackService, TrackInterceptor, TRACK_MODULE_OPTIONS],
     };
   }
@@ -35,6 +37,7 @@ export class TrackModule {
       global: options.isGlobal ?? true,
       imports: options.imports ?? [],
       providers: asyncProviders,
+      controllers: [TrackController],
       exports: [TrackService, TrackInterceptor, TRACK_MODULE_OPTIONS],
     };
   }

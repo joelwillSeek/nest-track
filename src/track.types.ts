@@ -2,6 +2,8 @@
  * Payload passed to the consumer's store on every tracked request.
  * No ORM coupling — map these fields to your own table/columns.
  */
+export type TrackSource = 'backend' | 'frontend';
+
 export interface TrackEventPayload {
   eventName: string;
   /**
@@ -13,6 +15,8 @@ export interface TrackEventPayload {
   /** Whatever your getUserId returns (string id, null, etc.). */
   userId?: string | null;
   metadata?: Record<string, unknown>;
+  /** Indicates whether the event originated from backend code or a frontend platform */
+  source?: TrackSource;
 }
 
 /**

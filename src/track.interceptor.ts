@@ -36,6 +36,13 @@ export class TrackInterceptor implements NestInterceptor {
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    if (context.getType() === 'http') {
+      const httpReq = context.switchToHttp().getRequest();
+      if (httpReq.url?.includes('track-from-platform')) {
+        return next.handle();
+      }
+    }
+
     const meta = this.reflector.get<TrackEventMeta | undefined>(
       TRACK_EVENT_KEY,
       context.getHandler(),
@@ -66,6 +73,7 @@ export class TrackInterceptor implements NestInterceptor {
               category,
               userId,
               metadata: meta.metadata,
+              source: 'backend',
             })
             .catch((err: unknown) =>
               console.error('[TrackInterceptor] Failed to record event:', err),
