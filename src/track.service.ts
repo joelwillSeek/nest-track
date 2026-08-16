@@ -22,6 +22,11 @@ export class TrackService {
   }
 
   async createTrackEvent(event: TrackEventPayload): Promise<unknown> {
+    // Conditional logging for tracking calls
+    if (process.env.TRACK_LOG_SHOW === 'true') {
+      this.logger.log(`[nest-track] createTrackEvent called - eventName: ${event.eventName}`);
+    }
+
     if (this.eventNames && !this.eventNames.has(event.eventName)) {
       const message = `[nest-track] Unknown event name "${event.eventName}". Allowed: ${[...this.eventNames].join(', ')}`;
       if (this.strictEventNames) {

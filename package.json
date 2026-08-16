@@ -1,6 +1,6 @@
 {
   "name": "@joelwillseek/nest-track",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "NestJS request analytics: @Track() decorator + interceptor with a pluggable store (no ORM coupling).",
   "author": "Eyoel",
   "license": "MIT",
@@ -34,7 +34,7 @@
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.0.0",
+    "@types/node": "^24.13.3",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
