@@ -5,7 +5,7 @@ import type { TrackModuleOptions } from './track.types';
 import { detectPlatform } from './detect-platform';
 
 export class TrackPlatformDto {
-  eventName: string;
+  eventName!: string;
   metadata?: Record<string, unknown>;
 }
 
@@ -17,7 +17,7 @@ export class TrackController {
   constructor(
     private readonly trackService: TrackService,
     @Inject(TRACK_MODULE_OPTIONS) private readonly options: TrackModuleOptions,
-  ) {}
+  ) { }
 
   @Post()
   async trackEvent(
