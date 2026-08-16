@@ -24,7 +24,7 @@ export type TrackGetUserId = (
     [key: string]: unknown;
   },
   res?: Record<string, unknown>,
-) => string | null | undefined;
+) => string;
 
 export type TrackDetectCategory = (userAgent: string) => string;
 

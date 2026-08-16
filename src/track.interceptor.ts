@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   NestInterceptor,
+  BadRequestException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
@@ -18,8 +19,13 @@ import {
   type TrackModuleOptions,
 } from './track.types';
 
-const defaultGetUserId: TrackGetUserId = (req) =>
-  req.user?.userId ?? req.user?.sub ?? null;
+const defaultGetUserId: TrackGetUserId = (req) => {
+  const userId = req.user?.userId ?? req.user?.sub;
+  if (!userId) {
+    throw new Error('userId is required for tracking');
+  }
+  return userId;
+};
 
 @Injectable()
 export class TrackInterceptor implements NestInterceptor {
@@ -61,19 +67,27 @@ export class TrackInterceptor implements NestInterceptor {
       typeof req.headers?.['user-agent'] === 'string'
         ? req.headers['user-agent']
         : '';
-    const category = this.detectCategory(ua);
+    const platform = this.detectCategory(ua);
 
     return next.handle().pipe(
       tap({
         next: () => {
           const userId = this.getUserId(req, res);
+
+          // userId is mandatory - throw error if missing
+          if (!userId) {
+            throw new BadRequestException('userId is required for tracking events');
+          }
+
           void this.trackService
             .createTrackEvent({
               eventName: meta.eventName,
-              category,
               userId,
-              metadata: meta.metadata,
-              source: 'backend',
+              metadata: {
+                ...(meta.metadata),
+                platform,
+                source: 'backend',
+              },
             })
             .catch((err: unknown) =>
               console.error('[TrackInterceptor] Failed to record event:', err),
