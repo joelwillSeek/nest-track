@@ -1,44 +1,50 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { TRACK_MODULE_OPTIONS } from './track.constants';
-import { TrackInterceptor } from './track.interceptor';
-import { TrackService } from './track.service';
-import { TrackController } from './track.controller';
-import { TrackModuleAsyncOptions, TrackModuleOptions } from './track.types';
+import { DynamicModule, Module } from '@nestjs/common';
+import { TrackService, TRACK_STORE } from './track.service';
+
+interface SimpleTrackOptions {
+  store: {
+    create(event: { eventName: string; userId: string; metadata: Record<string, unknown> }): Promise<unknown>;
+  };
+}
 
 @Module({})
 export class TrackModule {
-  static forRoot(options: TrackModuleOptions): DynamicModule {
+  static forRoot(options: SimpleTrackOptions): DynamicModule {
     return {
       module: TrackModule,
-      global: options.isGlobal ?? true,
+      global: true,
       providers: [
-        { provide: TRACK_MODULE_OPTIONS, useValue: options },
+        {
+          provide: TRACK_STORE,
+          useValue: options.store,
+        },
         TrackService,
-        TrackInterceptor,
       ],
-      controllers: [TrackController],
-      exports: [TrackService, TrackInterceptor, TRACK_MODULE_OPTIONS],
+      exports: [TrackService],
     };
   }
 
-  static forRootAsync(options: TrackModuleAsyncOptions): DynamicModule {
-    const asyncProviders: Provider[] = [
-      {
-        provide: TRACK_MODULE_OPTIONS,
-        useFactory: options.useFactory,
-        inject: options.inject ?? [],
-      },
-      TrackService,
-      TrackInterceptor,
-    ];
-
+  static forRootAsync(config: {
+    useFactory: (...args: any[]) => SimpleTrackOptions | Promise<SimpleTrackOptions>;
+    inject?: any[];
+    imports?: any[];
+  }): DynamicModule {
     return {
       module: TrackModule,
-      global: options.isGlobal ?? true,
-      imports: options.imports ?? [],
-      providers: asyncProviders,
-      controllers: [TrackController],
-      exports: [TrackService, TrackInterceptor, TRACK_MODULE_OPTIONS],
+      global: true,
+      imports: config.imports ?? [],
+      providers: [
+        {
+          provide: TRACK_STORE,
+          useFactory: async (...args: any[]) => {
+            const options = await config.useFactory(...args);
+            return options.store;
+          },
+          inject: config.inject ?? [],
+        },
+        TrackService,
+      ],
+      exports: [TrackService],
     };
   }
 }
