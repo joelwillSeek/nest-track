@@ -1,6 +1,6 @@
 {
   "name": "@joelwillseek/nest-track",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "NestJS request analytics: @Track() decorator + interceptor with a pluggable store (no ORM coupling).",
   "author": "Eyoel",
   "license": "MIT",
