@@ -6,7 +6,7 @@ import { detectPlatform } from './detect-platform';
 
 export class TrackPlatformDto {
   eventName!: string;
-  metadata?: Record<string, unknown>;
+  metadata!: Record<string, unknown>;
 }
 
 const defaultGetUserId = (req: any) =>
@@ -33,14 +33,16 @@ export class TrackController {
       typeof req.headers?.['user-agent'] === 'string'
         ? req.headers['user-agent']
         : '';
-    const category = detectCategory(ua);
+    const platform = detectCategory(ua);
 
     await this.trackService.createTrackEvent({
       eventName: body.eventName,
-      category,
       userId,
-      metadata: body.metadata,
-      source: 'frontend',
+      metadata: {
+        ...body.metadata,
+        platform,
+        source: body.metadata.source ?? 'frontend',
+      },
     });
 
     return { success: true };

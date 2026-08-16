@@ -2,21 +2,12 @@
  * Payload passed to the consumer's store on every tracked request.
  * No ORM coupling — map these fields to your own table/columns.
  */
-export type TrackSource = 'backend' | 'frontend';
-
 export interface TrackEventPayload {
   eventName: string;
-  /**
-   * Default detector returns a {@link TrackPlatform}-style label
-   * (flutter, react-native, android, ios, windows, macos, linux, browsers, …).
-   * Override via `detectCategory`.
-   */
-  category: string;
   /** Whatever your getUserId returns (string id, null, etc.). */
   userId?: string | null;
-  metadata?: Record<string, unknown>;
-  /** Indicates whether the event originated from backend code or a frontend platform */
-  source?: TrackSource;
+  /** Metadata object containing custom fields like source, platform, etc. */
+  metadata: Record<string, unknown>;
 }
 
 /**
