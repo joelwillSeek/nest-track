@@ -66,9 +66,16 @@ export class TrackInterceptor implements NestInterceptor {
         next: () => {
           const userId = this.getUserId(req, res);
 
-          // userId is mandatory - throw error if missing
-          if (!userId) {
-            throw new BadRequestException('userId is required for tracking events');
+          // userId is mandatory and must be a string - throw error if missing or null
+          if (!userId || typeof userId !== 'string') {
+            throw new BadRequestException('userId is required for tracking events and must be a string');
+          }
+
+          const eventMetadata = meta.metadata;
+          
+          // metadata is mandatory and cannot be null
+          if (!eventMetadata || eventMetadata === null) {
+            throw new BadRequestException('metadata is required for tracking events and cannot be null');
           }
 
           void this.trackService
@@ -76,7 +83,7 @@ export class TrackInterceptor implements NestInterceptor {
               eventName: meta.eventName,
               userId,
               metadata: {
-                ...(meta.metadata),
+                ...eventMetadata,
                 platform,
                 source: 'backend',
               },

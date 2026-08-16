@@ -3,7 +3,7 @@ import { TRACK_EVENT_KEY } from './track.constants';
 
 export interface TrackEventMeta {
   eventName: string;
-  /** Optional static metadata attached to every event from this handler. */
+  /** Static metadata attached to every event from this handler. */
   metadata: Record<string, unknown>;
 }
 
@@ -11,9 +11,13 @@ export interface TrackEventMeta {
  * Records an analytics event when the decorated handler completes successfully.
  *
  * @example
- *   @Track('USER_LOGIN')
+ *   @Track('USER_LOGIN', {})
  *   @Post('login')
  *   async login() { ... }
+ *
+ *   @Track('BUTTON_CLICK', { buttonId: 'submit' })
+ *   @Post('action')
+ *   async action() { ... }
  */
 export const Track = (
   eventName: string,
