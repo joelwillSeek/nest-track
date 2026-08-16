@@ -51,9 +51,9 @@ export interface TrackModuleOptions {
    * populated by any auth guard that ran. The response object is also
    * provided so you can extract userId from the handler's response body
    * (useful for login/signup endpoints).
-   * Default: `req.user?.userId ?? req.user?.sub ?? null`
+   * MUST return a valid string - userId is mandatory and cannot be null/undefined.
    */
-  getUserId?: TrackGetUserId;
+  getUserId: TrackGetUserId;
 
   /**
    * Map User-Agent → category string.

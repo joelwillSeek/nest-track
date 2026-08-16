@@ -19,14 +19,6 @@ import {
   type TrackModuleOptions,
 } from './track.types';
 
-const defaultGetUserId: TrackGetUserId = (req) => {
-  const userId = req.user?.userId ?? req.user?.sub;
-  if (!userId) {
-    throw new Error('userId is required for tracking');
-  }
-  return userId;
-};
-
 @Injectable()
 export class TrackInterceptor implements NestInterceptor {
   private readonly getUserId: TrackGetUserId;
@@ -37,7 +29,7 @@ export class TrackInterceptor implements NestInterceptor {
     private readonly reflector: Reflector,
     @Inject(TRACK_MODULE_OPTIONS) options: TrackModuleOptions,
   ) {
-    this.getUserId = options.getUserId ?? defaultGetUserId;
+    this.getUserId = options.getUserId;
     this.detectCategory = options.detectCategory ?? detectPlatform;
   }
 
