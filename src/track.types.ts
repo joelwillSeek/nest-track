@@ -4,8 +4,8 @@
  */
 export interface TrackEventPayload {
   eventName: string;
-  /** Whatever your getUserId returns (string id, null, etc.). */
-  userId?: string | null;
+  /** User ID - must be provided (never null). */
+  userId: string;
   /** Metadata object containing custom fields like source, platform, etc. */
   metadata: Record<string, unknown>;
 }
